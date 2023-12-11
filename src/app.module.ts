@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
+import { OrdersModule } from './orders/orders.module';
+import { Users } from './users/entities/user.entity';
+import { Orders } from './orders/entities/order.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -19,11 +22,12 @@ import { UsersModule } from './users/users.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [],
+        entities: [Users, Orders],
         synchronize: true,
       })
     }),
-    UsersModule
+    UsersModule,
+    OrdersModule
   ],
   controllers: [AppController],
   providers: [AppService],
