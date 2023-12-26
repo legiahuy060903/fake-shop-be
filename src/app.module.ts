@@ -5,8 +5,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { OrdersModule } from './orders/orders.module';
-import { Users } from './users/entities/user.entity';
-import { Orders } from './orders/entities/order.entity';
+import { UsersEntity } from './users/entities/user.entity';
+import { OrdersEntity } from './orders/entities/order.entity';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -22,12 +23,13 @@ import { Orders } from './orders/entities/order.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [Users, Orders],
+        entities: [UsersEntity, OrdersEntity],
         synchronize: true,
       })
     }),
     UsersModule,
-    OrdersModule
+    OrdersModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

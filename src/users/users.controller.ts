@@ -17,9 +17,9 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Post('login')
+  login(@Body("email") email: string, @Body("password") password: string) {
+    return this.usersService.findOneByEmail(email, password);
   }
 
   @Put(':id')

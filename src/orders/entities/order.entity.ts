@@ -1,18 +1,18 @@
 
-import { Users } from 'src/users/entities/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { UsersEntity } from 'src/users/entities/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, BaseEntity } from 'typeorm';
 
 @Entity({ name: 'orders' })
-export class Orders {
+export class OrdersEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
     userId: number;
 
-    @ManyToOne(() => Users, user => user.orders)
+    @ManyToOne(() => UsersEntity, user => user.orders)
     @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
-    user: Users;
+    user: UsersEntity;
 
     @Column()
     status: number;

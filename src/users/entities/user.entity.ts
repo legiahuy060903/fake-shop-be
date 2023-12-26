@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import { Orders } from 'src/orders/entities/order.entity';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, BaseEntity, BeforeInsert } from 'typeorm';
+import { OrdersEntity } from 'src/orders/entities/order.entity';
+import * as bcrypt from 'bcrypt';
 @Entity({ name: 'users' })
-export class Users {
+export class UsersEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -32,13 +33,23 @@ export class Users {
     @Column()
     refreshToken: string
 
-    @OneToMany(() => Orders, order => order.user)
-    orders: Orders[];
+    @OneToMany(() => OrdersEntity, order => order.user)
+    orders: OrdersEntity[];
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt: Date;
+    @BeforeInsert()
+    async hashPass(password: string) {
+        this.password = await bcrypt.hash(password, "huylg");
+    }
+
+
+    async validatePassword(password: string): Promise<boolean> {
+        const isValidUser = await bcrypt.compare(password, this.password);
+        return isValidUser;
+    }
 }
 

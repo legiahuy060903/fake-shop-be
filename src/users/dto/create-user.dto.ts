@@ -2,8 +2,8 @@ import { IsEmail, IsNotEmpty } from 'class-validator'
 
 export class CreateUserDto {
     @IsNotEmpty({ message: "Email không được để trống" })
-    @IsEmail()
-    username: string;
+    @IsEmail({}, { message: "Đúng định dạng email" })
+    email: string;
 
     @IsNotEmpty({ message: "Password không được để trống" })
     password: string;
@@ -16,7 +16,6 @@ export class CreateUserDto {
     role: string;
     avatar: string;
     gender: string;
-    date: Date;
     refreshToken: string;
     createdAt: Date;
     updatedAt: Date;
