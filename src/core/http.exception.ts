@@ -14,7 +14,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             timestamp: new Date().toISOString(),
             path: request.url,
             success: false,
-            error: exception.getResponse()['error'] || 'Internal Server Error',
+            error: exception.getResponse()?.['error'] || 'Internal Server Error',
             message:
                 exception.message
                 || exception.getResponse()['message']

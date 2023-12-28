@@ -30,7 +30,7 @@ export class UsersEntity extends BaseEntity {
     @Column({ nullable: true })
     gender: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, length: 4000 })
     refreshToken: string
 
     @OneToMany(() => OrdersEntity, order => order.user)

@@ -8,8 +8,6 @@ import { OrdersModule } from './orders/orders.module';
 import { UsersEntity } from './users/entities/user.entity';
 import { OrdersEntity } from './orders/entities/order.entity';
 import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
 @Module({
   imports: [
     ConfigModule.forRoot({

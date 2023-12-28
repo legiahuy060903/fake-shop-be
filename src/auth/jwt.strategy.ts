@@ -15,6 +15,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: any) {
-        return { user: payload };
+        return clean(payload);
     }
+}
+function clean(obj: any) {
+    for (var propName in obj) {
+        if (obj[propName] === null || obj[propName] === undefined) {
+            delete obj[propName];
+        }
+    }
+    return obj
 }

@@ -26,11 +26,11 @@ export class TransformInterceptor<T>
             map((data) => {
                 return {
                     statusCode: context.switchToHttp().getResponse().statusCode,
-                    message: data.message,
+                    message: data?.message || "",
                     success:
                         context.switchToHttp().getResponse().statusCode < 400,
                     data: {
-                        meta: data.meta,
+                        meta: data?.meta,
                         ...data
                     },
                 }

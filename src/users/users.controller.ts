@@ -38,15 +38,7 @@ export class UsersController {
   findAll(@Request() req: any) {
     return req.user;
   }
-  @Public()
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  login(@Request() req: any) {
-    return req.user
-  }
-  // login(@Body("email") email: string, @Body("password") password: string) {
-  //   return this.usersService.findOneByEmail(email, password);
-  // }
+
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
