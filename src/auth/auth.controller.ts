@@ -1,5 +1,5 @@
 import { AuthService } from './../auth/auth.service';
-import { Controller, Get, Post, Body, UseGuards, Res, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Res, Req, Query } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Public, User } from 'src/decorator/pub';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -28,6 +28,11 @@ export class AuthController {
     async handRefreshToken(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
         const cookie = request.cookies['refreshtoken'];
         return this.authService.checkRefreshToken(cookie, response)
+    }
 
+    @Public()
+    @Get('logout')
+    async logout(@Query("id") id: number, @Res({ passthrough: true }) response: Response) {
+        return await this.authService.handleLogout(id, response)
     }
 }

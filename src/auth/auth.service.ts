@@ -1,9 +1,9 @@
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { UsersEntity } from 'src/users/entities/user.entity';
-import { Response } from 'express';
+import { Response, response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -13,10 +13,11 @@ export class AuthService {
         const user = await this.usersService.findOneByEmail(username, pass);
         return user ? user : null
     }
-    handleLogin = (user: UsersEntity, res: Response) => {
+    handleLogin = async (user: UsersEntity, res: Response) => {
         const access_token: string = this.jwtService.sign({ ...user });
-        const refreshtoken = this.jwtService.sign({ ...user }, { secret: this.configService.get<string>("JWT_REFRESH_TOKEN"), expiresIn: this.configService.get<string>("JWT_REFRESH_EXPITE") })
-        res.cookie('refreshtoken', refreshtoken, { httpOnly: true, maxAge: 86400000 })
+        const refreshToken = this.jwtService.sign({ ...user }, { secret: this.configService.get<string>("JWT_REFRESH_TOKEN"), expiresIn: this.configService.get<string>("JWT_REFRESH_EXPITE") })
+        await this.usersService.update({ id: user.id }, { refreshToken });
+        res.cookie('refreshtoken', refreshToken, { httpOnly: true, maxAge: 86400000 })
         return { user: user, meta: { access_token } };
     }
 
@@ -30,5 +31,15 @@ export class AuthService {
             res.clearCookie("refreshtoken")
             throw new BadRequestException("Refresh token hết hạn. Vui lòng đang nhập lại")
         }
+    }
+    handleLogout = async (id: number, res: Response) => {
+        try {
+            res.clearCookie("refreshtoken")
+            await this.usersService.update({ id }, { refreshToken: null });
+            return true
+        } catch (error) {
+            throw new NotFoundException("Có lỗi xảy ra")
+        }
+
     }
 }
