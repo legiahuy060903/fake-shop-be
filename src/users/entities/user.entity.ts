@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, BaseEntity, BeforeInsert } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, BaseEntity, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { OrdersEntity } from 'src/orders/entities/order.entity';
 import * as bcrypt from 'bcrypt';
 @Entity({ name: 'users' })
@@ -7,7 +7,7 @@ export class UsersEntity extends BaseEntity {
     id: number;
 
     @Column()
-    name: string;
+    username: string;
 
     @Column({ unique: true })
     email: string;
@@ -15,37 +15,38 @@ export class UsersEntity extends BaseEntity {
     @Column()
     password: string;
 
-    @Column()
+    @Column({ nullable: true })
     phone: string;
 
-    @Column()
+    @Column({ nullable: true })
     avatar: string;
 
-    @Column()
+    @Column({ nullable: true })
     address: string;
 
-    @Column({ type: "enum", enum: ['R1', 'R2'], default: 'R1' })
-    role: 'R1' | 'R2';
+    @Column({ type: "enum", enum: ['R1', 'R2', 'R3'], default: 'R1' })
+    role: 'R1' | 'R2' | 'R3';
 
-    @Column()
+    @Column({ nullable: true })
     gender: string;
 
-    @Column()
+    @Column({ nullable: true })
     refreshToken: string
 
     @OneToMany(() => OrdersEntity, order => order.user)
     orders: OrdersEntity[];
 
-    @CreateDateColumn({ name: 'created_at' })
+    @CreateDateColumn({ type: "timestamp", name: 'created_at' })
     createdAt: Date;
 
-    @UpdateDateColumn({ name: 'updated_at' })
+    @UpdateDateColumn({ type: "timestamp", name: 'updated_at' })
     updatedAt: Date;
-    @BeforeInsert()
-    async hashPass(password: string) {
-        this.password = await bcrypt.hash(password, "huylg");
-    }
 
+    @BeforeInsert()
+    async hashPass() {
+        const salt = await bcrypt.genSalt();
+        this.password = await bcrypt.hash(this.password, salt);
+    }
 
     async validatePassword(password: string): Promise<boolean> {
         const isValidUser = await bcrypt.compare(password, this.password);

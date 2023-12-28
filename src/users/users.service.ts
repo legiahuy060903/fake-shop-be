@@ -5,27 +5,35 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { UsersEntity } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
+
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>,
   ) { }
-  async checkPass(password: string): Promise<boolean> {
-    const user = await this.usersRepository.findOne({ where: { password: password } });
-    return user ? await user.validatePassword(password) : false;
-  }
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+
+  async create(createUserDto: CreateUserDto) {
+    const user = this.usersRepository.create({
+      username: createUserDto.username,
+      email: createUserDto.email,
+      password: createUserDto.password
+    })
+
+    return await this.usersRepository.save(user, { reload: true })
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findAll() {
+    return await this.usersRepository.findAndCount();
+  }
+  async findOne(data: any): Promise<UsersEntity> {
+    return await this.usersRepository.findOne({ where: { ...data } });
   }
 
-  findOneByEmail(email: string, password: string) {
-    return `This action returns a #${email} user`;
+  async findOneByEmail(email: string, password: string): Promise<UsersEntity | null> {
+    const user = await this.usersRepository.findOne({ where: { email } });
+    if (user && await user.validatePassword(password)) return user
+    else return null
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

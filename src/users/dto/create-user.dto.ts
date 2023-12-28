@@ -9,7 +9,7 @@ export class CreateUserDto {
     password: string;
 
     @IsNotEmpty({ message: "Tên không được để trống" })
-    name: string;
+    username: string;
 
     address: string;
     phone: string;
