@@ -18,6 +18,9 @@ export class UsersEntity extends BaseEntity {
     @Column({ nullable: true })
     phone: string;
 
+    @Column({ default: "credentials" })
+    type: string;
+
     @Column({ nullable: true })
     avatar: string;
 

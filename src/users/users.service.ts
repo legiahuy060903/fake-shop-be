@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { UsersEntity } from './entities/user.entity';
 
 @Injectable()
@@ -13,13 +13,8 @@ export class UsersService {
     private usersRepository: Repository<UsersEntity>,
   ) { }
 
-  async create(createUserDto: CreateUserDto) {
-    const user = this.usersRepository.create({
-      username: createUserDto.username,
-      email: createUserDto.email,
-      password: createUserDto.password
-    })
-
+  async create(createUserDto: DeepPartial<CreateUserDto>) {
+    const user = this.usersRepository.create(createUserDto)
     return await this.usersRepository.save(user, { reload: true })
   }
 

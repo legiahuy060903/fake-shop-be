@@ -11,9 +11,10 @@ export class CreateUserDto {
     @IsNotEmpty({ message: "Tên không được để trống" })
     username: string;
 
+    type: string;
     address: string;
     phone: string;
-    role: string;
+    role: "R1" | "R2" | "R3";
     avatar: string;
     gender: string;
     refreshToken: string;
