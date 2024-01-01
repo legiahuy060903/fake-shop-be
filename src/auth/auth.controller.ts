@@ -11,7 +11,8 @@ import { UsersService } from 'src/users/users.service';
 @Controller('auth')
 export class AuthController {
 
-    constructor(private authService: AuthService, private usersService: UsersService) { }
+    constructor(private authService: AuthService, private usersService: UsersService
+    ) { }
 
     @Public()
     @Post("register")
@@ -35,6 +36,24 @@ export class AuthController {
     @Post('login')
     async login(@Req() req: any, @Res({ passthrough: true }) response: Response) {
         return this.authService.handleLogin(req.user, response)
+    }
+
+    @Public()
+    @Post('login-social')
+    async loginWithSocial(@Req() req: any, @Res({ passthrough: true }) response: Response) {
+        const { email, type } = req.body;
+        if (type && type !== "credentials") {
+            const user = await this.authService.handleSocial({ email, type, response })
+            return user
+        } else throw new HttpException(
+            {
+                status: HttpStatus.CONFLICT,
+                error: 'Không đúng định dạng'
+            },
+            HttpStatus.UNAUTHORIZED,
+        );
+
+
     }
 
     @Get('account')

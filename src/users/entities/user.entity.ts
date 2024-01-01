@@ -6,13 +6,13 @@ export class UsersEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ nullable: true })
     username: string;
 
     @Column({ unique: true })
     email: string;
 
-    @Column()
+    @Column({ nullable: true })
     password: string;
 
     @Column({ nullable: true })
@@ -47,8 +47,12 @@ export class UsersEntity extends BaseEntity {
 
     @BeforeInsert()
     async hashPass() {
-        const salt = await bcrypt.genSalt();
-        this.password = await bcrypt.hash(this.password, salt);
+
+        if (this.password && this.password.length > 0) {
+            const salt = await bcrypt.genSalt();
+            this.password = await bcrypt.hash(this.password, salt);
+        }
+
     }
 
     async validatePassword(password: string): Promise<boolean> {

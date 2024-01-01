@@ -25,10 +25,11 @@ export class UsersService {
     return await this.usersRepository.findOne({ where: { ...data } });
   }
 
-  async findOneByEmail(email: string, password: string): Promise<UsersEntity | null> {
-    const user = await this.usersRepository.findOne({ where: { email } });
-    if (user && await user.validatePassword(password)) return user
-    else return null
+  async findOneByEmail({ username, password }): Promise<UsersEntity | null> {
+    const user = await this.usersRepository.findOne({ where: { email: username, username, phone: username } });
+    if (user && user.type === "credentials" && await user.validatePassword(password)) return user
+    if (user && user.type !== "credentials") return user
+    return null
   }
 
   async update(condition: any, val: any) {

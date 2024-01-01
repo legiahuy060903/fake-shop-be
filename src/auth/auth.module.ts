@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersEntity } from 'src/users/entities/user.entity';
 
 
 @Module({
@@ -17,7 +19,8 @@ import { AuthController } from './auth.controller';
       signOptions: { expiresIn: configService.get<string>('JWT_ACCESS_EXPITE') }
     }),
     inject: [ConfigService],
-  })
+  }),
+    TypeOrmModule.forFeature([UsersEntity])
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
