@@ -7,12 +7,11 @@ import { UsersService } from 'src/users/users.service';
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
     constructor(private authService: AuthService, private usersService: UsersService) {
-        super({ passReqToCallback: true });
+        super();
     }
 
-    async validate(req: any): Promise<any> {
-        const { password, email } = req.body;
-        const user = await this.usersService.findOneByEmail({ username: email, password });
+    async validate(username: string, password: string): Promise<any> {
+        const user = await this.usersService.findOneByEmail({ username, password });
         if (!user) {
             throw new UnauthorizedException('Tài khoản không hợp lệ');
         }

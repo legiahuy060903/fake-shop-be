@@ -29,10 +29,7 @@ export class TransformInterceptor<T>
                     message: data?.message || "",
                     success:
                         context.switchToHttp().getResponse().statusCode < 400,
-                    data: {
-                        meta: data?.meta,
-                        ...data
-                    },
+                    ...data
                 }
             })
         );

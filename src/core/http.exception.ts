@@ -16,8 +16,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             success: false,
             error: exception.getResponse()?.['error'] || 'Internal Server Error',
             message:
-                exception.message
-                || exception.getResponse()['message']
+                exception.getResponse()['message'] || exception.message
                 || 'Internal Server Error',
         });
     }

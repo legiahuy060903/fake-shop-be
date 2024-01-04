@@ -19,14 +19,15 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.usersRepository.findAndCount();
+    const [data, total] = await this.usersRepository.findAndCount();
+    return { data, meta: { total } }
   }
   async findOne(data: any): Promise<UsersEntity> {
     return await this.usersRepository.findOne({ where: { ...data } });
   }
 
   async findOneByEmail({ username, password }): Promise<UsersEntity | null> {
-    const user = await this.usersRepository.findOne({ where: { email: username, username, phone: username } });
+    const user = await this.usersRepository.findOne({ where: [{ email: username }, { username: username }, { phone: username }] });
     if (user && user.type === "credentials" && await user.validatePassword(password)) return user
     if (user && user.type !== "credentials") return user
     return null
