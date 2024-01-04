@@ -10,6 +10,8 @@ import { OrdersEntity } from './orders/entities/order.entity';
 import { AuthModule } from './auth/auth.module';
 import { CategoriesModule } from './categories/categories.module';
 import { CategoryEntity } from './categories/entities/category.entity';
+import { ProductsModule } from './products/products.module';
+import { ProductsEntity } from './products/entities/product.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -25,14 +27,15 @@ import { CategoryEntity } from './categories/entities/category.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [UsersEntity, OrdersEntity, CategoryEntity],
+        entities: [UsersEntity, OrdersEntity, CategoryEntity, ProductsEntity],
         synchronize: true,
       })
     }),
     UsersModule,
     OrdersModule,
     AuthModule,
-    CategoriesModule
+    CategoriesModule,
+    ProductsModule
   ],
   controllers: [AppController],
   providers: [AppService],

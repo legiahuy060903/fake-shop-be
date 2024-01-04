@@ -9,12 +9,13 @@ import { ApiQueryRestParams } from 'src/core/const';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) { }
 
-  @Public()
+
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
 
+  @Public()
   @Get()
   findAll(@Query() query: ApiQueryRestParams) {
     return this.categoriesService.findAll(query);
