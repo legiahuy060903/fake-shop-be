@@ -45,7 +45,7 @@ export class ProductsEntity extends BaseEntity {
     @Column({ default: 1 })
     view: number;
 
-    @ManyToOne(() => CategoryEntity, category => category.product)
+    @ManyToOne(() => CategoryEntity, category => category.product, { onDelete: "CASCADE", onUpdate: "CASCADE" })
     category: CategoryEntity | number;
 
     @OneToMany(() => ImagesEntity, image => image.product)

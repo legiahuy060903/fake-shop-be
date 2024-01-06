@@ -27,9 +27,9 @@ export class UsersService {
   }
 
   async findOneByEmail({ username, password }): Promise<UsersEntity | null> {
+    console.log(username, password)
     const user = await this.usersRepository.findOne({ where: [{ email: username }, { username: username }, { phone: username }] });
     if (user && user.type === "credentials" && await user.validatePassword(password)) return user
-    if (user && user.type !== "credentials") return user
     return null
   }
 

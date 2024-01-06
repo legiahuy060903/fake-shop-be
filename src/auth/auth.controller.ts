@@ -1,5 +1,5 @@
 import { AuthService } from './../auth/auth.service';
-import { Controller, Get, Post, Body, UseGuards, Res, Req, Query, HttpStatus, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Res, Req, Query, HttpStatus, HttpException, BadRequestException } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { Public, User } from 'src/decorator/pub';
 import { LocalAuthGuard } from './local-auth.guard';
@@ -18,42 +18,26 @@ export class AuthController {
     @Post("register")
     async create(@Body() createUserDto: CreateUserDto) {
         const checkMail = await this.usersService.findOne({ email: createUserDto.email });
-        if (checkMail) {
-            throw new HttpException(
-                {
-                    status: HttpStatus.CONFLICT,
-                    error: 'Email đã được sử dụng',
-                },
-                HttpStatus.CONFLICT,
-            );
-        } else {
-            return await this.usersService.create(createUserDto);
-        }
+        if (checkMail) throw new BadRequestException("Email đã được sử dụng");
+        else return { data: await this.usersService.create(createUserDto) }
+
     }
 
     @Public()
     @UseGuards(LocalAuthGuard)
     @Post('login')
     async login(@Req() req: any, @Res({ passthrough: true }) response: Response) {
-        return this.authService.handleLogin(req.user, response)
+        return { data: await this.authService.handleLogin(req.user, response) }
     }
 
     @Public()
     @Post('login-social')
     async loginWithSocial(@Req() req: any, @Res({ passthrough: true }) response: Response) {
-        const { email, type } = req.body;
+        const { email, type, username } = req.body;
         if (type && type !== "credentials") {
-            const user = await this.authService.handleSocial({ email, type, response })
-            return user
-        } else throw new HttpException(
-            {
-                status: HttpStatus.CONFLICT,
-                error: 'Không đúng định dạng'
-            },
-            HttpStatus.UNAUTHORIZED,
-        );
-
-
+            const user = await this.authService.handleSocial({ email, type, username, response })
+            return { data: user }
+        } else throw new BadRequestException("Khong dung dinh dang")
     }
 
     @Get('account')

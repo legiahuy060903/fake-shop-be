@@ -20,11 +20,11 @@ export class AuthService {
         const refreshToken = this.jwtService.sign({ ...data }, { secret: this.configService.get<string>("JWT_REFRESH_TOKEN"), expiresIn: this.configService.get<string>("JWT_REFRESH_EXPITE") })
         await this.usersService.update({ id: user.id }, { refreshToken });
         res.cookie('refreshtoken', refreshToken, { httpOnly: true, maxAge: 86400000 })
-        return { user: data, access_token, refreshToken };
+        return { user: data, access_token, refreshToken, expires: this.configService.get<string>("JWT_ACCESS_EXPITE") };
     }
-    handleSocial = async ({ email, type, response }: { email: string, type: string, response: Response }) => {
+    handleSocial = async ({ email, type, username, response }: { email: string, type: string, username: string | undefined, response: Response }) => {
         let user = await this.usersService.findOne({ email });
-        if (!user) user = await this.usersService.create({ email, type })
+        if (!user) user = await this.usersService.create({ email, type, username: username || email })
         return await this.handleLogin(user, response)
     }
     checkRefreshToken = async (token: string, res: Response) => {

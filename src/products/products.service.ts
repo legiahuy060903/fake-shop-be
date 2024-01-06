@@ -42,7 +42,7 @@ export class ProductsService {
   async remove(id: number) {
     const pro = await this.productRepository.findOne({ where: { id }, relations: ["images"] });
     if (pro) return await this.productRepository.remove(pro)
-    else throw new BadRequestException()
+    else throw new BadRequestException("Id không tồn tại")
   }
 
 }
