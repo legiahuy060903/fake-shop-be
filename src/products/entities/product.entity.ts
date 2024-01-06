@@ -1,9 +1,17 @@
 
 import { CategoryEntity } from 'src/categories/entities/category.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, BaseEntity, ManyToOne, JoinColumn } from 'typeorm';
+import {
+    Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn,
+    BaseEntity, ManyToOne, OneToMany, BeforeRemove
+} from 'typeorm';
+import { ImagesEntity } from './image.entity';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { ConfigService } from '@nestjs/config';
 
 @Entity({ name: 'products' })
 export class ProductsEntity extends BaseEntity {
+
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -23,9 +31,6 @@ export class ProductsEntity extends BaseEntity {
     author: string;
 
     @Column()
-    categoryId: number;
-
-    @Column()
     number_of_page: number;
 
     @Column({ default: 1 })
@@ -41,8 +46,10 @@ export class ProductsEntity extends BaseEntity {
     view: number;
 
     @ManyToOne(() => CategoryEntity, category => category.product)
-    @JoinColumn({ name: 'categoryId', referencedColumnName: 'id' })
-    category: CategoryEntity;
+    category: CategoryEntity | number;
+
+    @OneToMany(() => ImagesEntity, image => image.product)
+    images: ImagesEntity[];
 
     @CreateDateColumn({ type: "timestamp", name: 'created_at' })
     createdAt: Date;
@@ -50,5 +57,13 @@ export class ProductsEntity extends BaseEntity {
     @UpdateDateColumn({ type: "timestamp", name: 'updated_at' })
     updatedAt: Date;
 
-
+    @BeforeRemove()
+    async destroyed() {
+        if (this.images.length > 0) {
+            const cloud = new CloudinaryService(new ConfigService);
+            for (const image of this.images) {
+                await cloud.deleteImage(image.url);
+            }
+        }
+    }
 }

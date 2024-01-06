@@ -7,11 +7,7 @@ export class OrdersEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    userId: number;
-
     @ManyToOne(() => UsersEntity, user => user.orders)
-    @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
     user: UsersEntity;
 
     @Column()

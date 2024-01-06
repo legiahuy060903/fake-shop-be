@@ -5,8 +5,6 @@ export class CreateCategoryDto {
     name: string;
 
     block: boolean;
-
     createdAt: Date;
-
     updatedAt: Date;
 }

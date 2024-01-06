@@ -12,6 +12,8 @@ import { CategoriesModule } from './categories/categories.module';
 import { CategoryEntity } from './categories/entities/category.entity';
 import { ProductsModule } from './products/products.module';
 import { ProductsEntity } from './products/entities/product.entity';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ImagesEntity } from './products/entities/image.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,7 +29,7 @@ import { ProductsEntity } from './products/entities/product.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [UsersEntity, OrdersEntity, CategoryEntity, ProductsEntity],
+        entities: [UsersEntity, OrdersEntity, CategoryEntity, ProductsEntity, ImagesEntity],
         synchronize: true,
       })
     }),
@@ -35,7 +37,8 @@ import { ProductsEntity } from './products/entities/product.entity';
     OrdersModule,
     AuthModule,
     CategoriesModule,
-    ProductsModule
+    ProductsModule,
+    CloudinaryModule
   ],
   controllers: [AppController],
   providers: [AppService],
