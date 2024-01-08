@@ -49,12 +49,17 @@ export class AuthController {
     @Get('refresh')
     async handRefreshToken(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
         const cookie = request.cookies['refreshtoken'];
-        return this.authService.checkRefreshToken(cookie, response)
+        return { data: await this.authService.checkRefreshToken(cookie, response) }
+    }
+    @Public()
+    @Post('refresh')
+    async handRefreshTokenBody(@Body() { refreshToken }, @Res({ passthrough: true }) response: Response) {
+        return { data: await this.authService.checkRefreshToken(refreshToken, response) }
     }
 
     @Public()
     @Get('logout')
     async logout(@Query("id") id: number, @Res({ passthrough: true }) response: Response) {
-        return await this.authService.handleLogout(id, response)
+        return { data: await this.authService.handleLogout(id, response) }
     }
 }

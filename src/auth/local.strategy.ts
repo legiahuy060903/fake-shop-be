@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException, Body } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from 'src/users/users.service';
 
@@ -13,7 +13,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     async validate(username: string, password: string): Promise<any> {
         const user = await this.usersService.findOneByEmail({ username, password });
         if (!user) {
-            throw new UnauthorizedException('Tài khoản không hợp lệ');
+            throw new BadRequestException('Tài khoản không hợp lệ');
         }
         return user;
     }

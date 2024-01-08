@@ -6,7 +6,7 @@ import { UsersEntity } from 'src/users/entities/user.entity';
 import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Not, Repository } from 'typeorm';
-
+import ms from "ms";
 
 @Injectable()
 export class AuthService {
@@ -19,8 +19,9 @@ export class AuthService {
         const access_token: string = this.jwtService.sign({ ...data });
         const refreshToken = this.jwtService.sign({ ...data }, { secret: this.configService.get<string>("JWT_REFRESH_TOKEN"), expiresIn: this.configService.get<string>("JWT_REFRESH_EXPITE") })
         await this.usersService.update({ id: user.id }, { refreshToken });
-        res.cookie('refreshtoken', refreshToken, { httpOnly: true, maxAge: 86400000 })
-        return { user: data, access_token, refreshToken, expires: this.configService.get<string>("JWT_ACCESS_EXPITE") };
+        res.cookie('refreshtoken', refreshToken, { httpOnly: true, maxAge: ms(this.configService.get<string>("JWT_REFRESH_EXPITE")) });
+        const expires = new Date().setTime(new Date().getTime() + ms(this.configService.get<string>("JWT_ACCESS_EXPITE")));
+        return { user: data, access_token, refreshToken, expires };
     }
     handleSocial = async ({ email, type, username, response }: { email: string, type: string, username: string | undefined, response: Response }) => {
         let user = await this.usersService.findOne({ email });

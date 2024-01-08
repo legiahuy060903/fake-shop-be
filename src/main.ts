@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { HttpExceptionFilter } from './core/http.exception';
-import * as cookieParser from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
