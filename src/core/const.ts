@@ -23,7 +23,6 @@ export interface IQuery {
 export const apiQueryRest = (params: ApiQueryRestParams): IQuery => {
     const { _offset, _limit, _sort, _order, q, name, _noQuery, ...rest } = params;
     let query: IQuery = {};
-
     if (_noQuery === 1) return null;
     if (_limit) query.take = +_limit;
     if (_offset) query.skip = +_offset;
@@ -61,3 +60,5 @@ export const apiQueryRest = (params: ApiQueryRestParams): IQuery => {
     }
     return query;
 };
+
+

@@ -18,17 +18,22 @@ export class ProductsEntity extends BaseEntity {
     @Column()
     name: string;
 
-    @Column()
+    @Column({ type: "text" })
     description: string;
 
     @Column({ type: "boolean", default: true })
     public: boolean;
 
-    @CreateDateColumn({ type: "timestamp" })
+    @CreateDateColumn({
+        type: "timestamp", nullable: true
+    })
     publish_date: Date
 
     @Column()
     author: string;
+
+    @Column()
+    amount: number;
 
     @Column()
     number_of_page: number;
@@ -45,6 +50,9 @@ export class ProductsEntity extends BaseEntity {
     @Column({ default: 1 })
     view: number;
 
+    @Column()
+    thumbnail: string;
+
     @ManyToOne(() => CategoryEntity, category => category.product, { onDelete: "CASCADE", onUpdate: "CASCADE" })
     category: CategoryEntity | number;
 
@@ -59,8 +67,9 @@ export class ProductsEntity extends BaseEntity {
 
     @BeforeRemove()
     async destroyed() {
+        const cloud = new CloudinaryService(new ConfigService);
+        await cloud.deleteImage(this.thumbnail);
         if (this.images.length > 0) {
-            const cloud = new CloudinaryService(new ConfigService);
             for (const image of this.images) {
                 await cloud.deleteImage(image.url);
             }

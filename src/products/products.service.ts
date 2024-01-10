@@ -1,12 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Query } from '@nestjs/common';
 import { CreateImageDto, CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsEntity } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, BeforeRemove } from 'typeorm';
+import { Repository, BeforeRemove, Like } from 'typeorm';
 import { CloudinaryResponse, CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ImagesEntity } from './entities/image.entity';
 import { CategoryEntity } from 'src/categories/entities/category.entity';
+import { ApiQueryRestParams, apiQueryRest } from 'src/core/const';
+import { IFileProduct } from './products.controller';
+
 
 @Injectable()
 export class ProductsService {
@@ -17,26 +20,36 @@ export class ProductsService {
     private imageRepository: Repository<ImagesEntity>,
     private cloudinaryService: CloudinaryService,
   ) { }
-  async create(createProductDto: CreateProductDto, images: CloudinaryResponse[]) {
-    const imagesData: Partial<ImagesEntity>[] = images.map((item) => ({ url: item.secure_url }))
-    const i = this.imageRepository.create(imagesData);
-    const dataImages = await this.imageRepository.save(i, { reload: true });
-    createProductDto.images = dataImages;
+
+
+
+  async create(createProductDto: CreateProductDto, files: IFileProduct) {
+    const thumbnail = await this.cloudinaryService.uploadFile(files.thumbnail);
+    createProductDto.thumbnail = thumbnail.secure_url;
+    if (files.images && files.images.length > 0) {
+      const images: CloudinaryResponse[] = await this.cloudinaryService.uploadFiles(files.images);
+      const imagesData: Partial<ImagesEntity>[] = images.map((item) => ({ url: item.secure_url }))
+      const i = this.imageRepository.create(imagesData);
+      const dataImages = await this.imageRepository.save(i, { reload: true });
+      createProductDto.images = dataImages;
+    }
     const product: ProductsEntity = this.productRepository.create(createProductDto);
     const result = await this.productRepository.save(product, { reload: true });
     return { data: result };
   }
 
-  async findAll() {
-    return { data: await this.productRepository.find({ relations: ['category'] }) };
+  async findAll(query: ApiQueryRestParams) {
+    const q = { ...apiQueryRest(query), relations: ['category', 'images'] }
+    return { data: await this.productRepository.find(q) };
   }
 
   findOne(id: number) {
     return `This action returns a #${id} product`;
   }
 
+
   update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+    return;
   }
 
   async remove(id: number) {
