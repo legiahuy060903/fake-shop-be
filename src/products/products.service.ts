@@ -41,7 +41,7 @@ export class ProductsService {
   async findAll(query: ApiQueryRestParams) {
     const q = { ...apiQueryRest(query), relations: ['category', 'images'] };
     const [data, total] = await this.productRepository.findAndCount(q)
-    return { data, meta: { total, _page: query._page, _limit: query._limit } };
+    return { data, meta: { total, _page: +query._page, _limit: +query._limit } };
 
   }
 

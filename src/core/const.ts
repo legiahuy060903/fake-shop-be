@@ -43,6 +43,7 @@ const handleToan = ({ op, opValue }) => {
 };
 export const apiQueryRest = (params: ApiQueryRestParams): IQuery => {
     const { _page, _limit, _sort, _order, search, name, _noQuery, ...rest } = params;
+
     let query: IQuery = {};
     if (_noQuery === 1) return null;
     if (_limit) query.take = +_limit;
