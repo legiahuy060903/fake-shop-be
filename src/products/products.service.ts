@@ -3,13 +3,13 @@ import { CreateImageDto, CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsEntity } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, BeforeRemove, Like } from 'typeorm';
+import { Repository, Like, And, LessThan, MoreThan } from 'typeorm';
 import { CloudinaryResponse, CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ImagesEntity } from './entities/image.entity';
 import { CategoryEntity } from 'src/categories/entities/category.entity';
-import { ApiQueryRestParams, apiQueryRest } from 'src/core/const';
+import { ApiQueryRestParams, apiQueryRest, data, handleWeek } from 'src/core/const';
 import { IFileProduct } from './products.controller';
-
+import moment from "moment-timezone";
 
 @Injectable()
 export class ProductsService {
@@ -39,9 +39,12 @@ export class ProductsService {
   }
 
   async findAll(query: ApiQueryRestParams) {
-    const q = { ...apiQueryRest(query), relations: ['category', 'images'] }
-    return { data: await this.productRepository.find(q) };
+    const q = { ...apiQueryRest(query), relations: ['category', 'images'] };
+    const [data, total] = await this.productRepository.findAndCount(q)
+    return { data, meta: { total, _page: query._page, _limit: query._limit } };
+
   }
+
 
   findOne(id: number) {
     return `This action returns a #${id} product`;
@@ -57,5 +60,10 @@ export class ProductsService {
     if (pro) return await this.productRepository.remove(pro)
     else throw new BadRequestException("Id không tồn tại")
   }
-
+  async ff() {
+    for (const i of data) {
+      const product = this.productRepository.create(i)
+      await this.productRepository.save(product);
+    }
+  }
 }

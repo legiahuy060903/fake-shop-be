@@ -12,6 +12,7 @@ import { FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestj
 import { ApiQueryRestParams } from 'src/core/const';
 import { ValidationThumbnailPipe } from 'src/core/pipes/thumbFile.pipe';
 
+
 export interface IFileProduct {
   thumbnail: Express.Multer.File, images?: Express.Multer.File[]
 }

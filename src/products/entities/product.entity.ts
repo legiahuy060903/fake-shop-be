@@ -2,11 +2,12 @@
 import { CategoryEntity } from 'src/categories/entities/category.entity';
 import {
     Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn,
-    BaseEntity, ManyToOne, OneToMany, BeforeRemove
+    BaseEntity, ManyToOne, OneToMany, BeforeRemove, BeforeInsert, BeforeUpdate
 } from 'typeorm';
 import { ImagesEntity } from './image.entity';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ConfigService } from '@nestjs/config';
+import { toSlug } from 'src/core/const';
 
 @Entity({ name: 'products' })
 export class ProductsEntity extends BaseEntity {
@@ -24,10 +25,8 @@ export class ProductsEntity extends BaseEntity {
     @Column({ type: "boolean", default: true })
     public: boolean;
 
-    @CreateDateColumn({
-        type: "timestamp", nullable: true
-    })
-    publish_date: Date
+    @Column()
+    publish_date: string
 
     @Column()
     author: string;
@@ -53,6 +52,9 @@ export class ProductsEntity extends BaseEntity {
     @Column()
     thumbnail: string;
 
+    @Column()
+    slug: string;
+
     @ManyToOne(() => CategoryEntity, category => category.product, { onDelete: "CASCADE", onUpdate: "CASCADE" })
     category: CategoryEntity | number;
 
@@ -64,6 +66,13 @@ export class ProductsEntity extends BaseEntity {
 
     @UpdateDateColumn({ type: "timestamp", name: 'updated_at' })
     updatedAt: Date;
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    async hashUrlSlug() {
+        this.slug = toSlug(this.name)
+    }
+
 
     @BeforeRemove()
     async destroyed() {

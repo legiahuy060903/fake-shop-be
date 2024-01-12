@@ -6,6 +6,8 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
 import { HttpExceptionFilter } from './core/http.exception';
 import cookieParser from 'cookie-parser';
+import moment from 'moment-timezone';
+moment.tz.setDefault("Asia/Ho_Chi_Minh");
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({

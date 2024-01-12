@@ -30,8 +30,8 @@ export class CloudinaryService {
             streamifier.createReadStream(file.buffer).pipe(uploadStream);
         })
     }
-    async deleteImage(url:string){
-        const public_id = this.configService.get<string>("CLOUDINARY_API_FORDER") + "/"+ url.split("/").at(-1).split(".")[0];
+    async deleteImage(url: string) {
+        const public_id = this.configService.get<string>("CLOUDINARY_API_FORDER") + "/" + url.split("/").at(-1).split(".")[0];
         return new Promise<CloudinaryResponse>((resolve, reject) => {
             cloudinary.uploader.destroy(public_id, (error, result) => {
                 if (error) return reject(error);
@@ -39,24 +39,11 @@ export class CloudinaryService {
             })
         })
     }
-    
+
     async uploadFiles(images: Express.Multer.File[]): Promise<CloudinaryResponse[]> {
         const uploadPromises = images.map((image) => this.uploadFile(image));
         return Promise.all(uploadPromises);
     }
-    
-} 
-       
 
+}
 
- // return new Promise<CloudinaryResponse>((resolve, reject) => {
-        //     const uploadStream = cloudinary.uploader.upload_stream({ folder: this.configService.get<string>("CLOUDINARY_API_FORDER") },
-        //         (error, result) => {
-        //             if (error) return reject(error);
-        //             resolve(result);
-        //         },
-        //     );
-        //     console.log(1)
-            
-        //     // streamifier.createReadStream(file.buffer).pipe(uploadStream);
-        // })

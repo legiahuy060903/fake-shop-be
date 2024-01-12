@@ -14,11 +14,12 @@ export class CreateProductDto {
 
     //@IsNotEmpty({ message: "Ảnh chính không được để trống" })
     thumbnail: string;
+    slug: string;
 
     public: boolean;
 
     @IsNotEmpty({ message: "Ngày ra mắt không được để trống" })
-    publish_date: Date;
+    publish_date: string;
 
     @IsNotEmpty({ message: "Tác giả không được để trống" })
     author: string;
