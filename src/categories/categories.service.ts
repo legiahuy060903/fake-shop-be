@@ -21,7 +21,7 @@ export class CategoriesService {
   }
 
   async findAll(query: ApiQueryRestParams) {
-    let con = { ...apiQueryRest(query), relations: ['product'], };
+    let con = { ...apiQueryRest(query), relations: ['product'] };
     const [result, total] = await this.categoryRepository.findAndCount(con);
     return { data: result, meta: { total } };
   }

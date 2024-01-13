@@ -9,7 +9,8 @@ import { ImagesEntity } from './entities/image.entity';
 import { CategoryEntity } from 'src/categories/entities/category.entity';
 import { ApiQueryRestParams, apiQueryRest, data, handleWeek } from 'src/core/const';
 import { IFileProduct } from './products.controller';
-import moment from "moment-timezone";
+import { Observable, from, map } from 'rxjs';
+
 
 @Injectable()
 export class ProductsService {
@@ -38,18 +39,29 @@ export class ProductsService {
     return { data: result };
   }
 
-  async findAll(query: ApiQueryRestParams) {
+  findAll(query: ApiQueryRestParams): Observable<{ data: any[], meta: { total: number, _page: number, _limit: number } }> {
     const q = { ...apiQueryRest(query), relations: ['category', 'images'] };
-    const [data, total] = await this.productRepository.findAndCount(q)
-    return { data, meta: { total, _page: +query._page, _limit: +query._limit } };
-
+    return from(this.productRepository.findAndCount(q)).pipe(
+      map(([data, total]) => ({
+        data, meta: { total, _page: +query._page, _limit: +query._limit },
+      })),
+    );
   }
 
 
   findOne(id: number) {
     return `This action returns a #${id} product`;
   }
-
+  findOneBySlug(slug: string) {
+    return from(this.productRepository.findOne({ where: { slug }, relations: ["images", "category"] })).pipe(
+      map(item => ({
+        data: {
+          slides: [item.thumbnail, ...item.images.map(i => i.url)],
+          ...item,
+        }
+      })),
+    );
+  }
 
   update(id: number, updateProductDto: UpdateProductDto) {
     return;

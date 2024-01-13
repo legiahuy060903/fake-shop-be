@@ -28,24 +28,29 @@ export class ProductsController {
   // }
   @UseInterceptors(FileFieldsInterceptor([
     { name: 'thumbnail', maxCount: 1 },
-    { name: 'images', maxCount: 5 },
+    { name: 'images', maxCount: 4 },
   ]))
   async create(@UploadedFiles(new ValidationThumbnailPipe()) files: IFileProduct,
     @Body() createProductDto: CreateProductDto) {
-
     return await this.productsService.create(createProductDto, files);
   }
 
   @Public()
   @Get()
   async findAll(@Query() query: ApiQueryRestParams) {
-    return await this.productsService.findAll(query);
+    return this.productsService.findAll(query);
   }
 
 
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);
+  }
+
+  @Public()
+  @Get('detail/:slug')
+  findOneBySlug(@Param('slug') slug: string) {
+    return this.productsService.findOneBySlug(slug);
   }
 
   @Put(':id')
