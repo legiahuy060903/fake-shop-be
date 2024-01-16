@@ -2,12 +2,13 @@
 import { CategoryEntity } from 'src/categories/entities/category.entity';
 import {
     Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn,
-    BaseEntity, ManyToOne, OneToMany, BeforeRemove, BeforeInsert, BeforeUpdate
+    BaseEntity, ManyToOne, OneToMany, BeforeRemove, BeforeInsert, BeforeUpdate, BeforeRecover, AfterLoad
 } from 'typeorm';
 import { ImagesEntity } from './image.entity';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ConfigService } from '@nestjs/config';
 import { toSlug } from 'src/core/const';
+import { CommentEntity } from 'src/comments/entities/comment.entity';
 
 @Entity({ name: 'products' })
 export class ProductsEntity extends BaseEntity {
@@ -40,7 +41,7 @@ export class ProductsEntity extends BaseEntity {
     @Column({ default: 1 })
     sold: number;
 
-    @Column({ default: 5 })
+    @Column({ default: 5, type: "float" })
     rating: number;
 
     @Column()
@@ -60,6 +61,9 @@ export class ProductsEntity extends BaseEntity {
 
     @OneToMany(() => ImagesEntity, image => image.product)
     images: ImagesEntity[];
+
+    @OneToMany(() => CommentEntity, comment => comment.product)
+    comments: CommentEntity[];
 
     @CreateDateColumn({ type: "timestamp", name: 'created_at' })
     createdAt: Date;
@@ -84,4 +88,6 @@ export class ProductsEntity extends BaseEntity {
             }
         }
     }
+
+
 }

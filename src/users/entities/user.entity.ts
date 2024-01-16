@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, Unique, CreateDateColumn, UpdateDateColumn, OneToMany, BaseEntity, BeforeInsert, BeforeUpdate } from 'typeorm';
 import { OrdersEntity } from 'src/orders/entities/order.entity';
 import * as bcrypt from 'bcrypt';
+import { CommentEntity } from 'src/comments/entities/comment.entity';
 @Entity({ name: 'users' })
 export class UsersEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
@@ -38,6 +39,9 @@ export class UsersEntity extends BaseEntity {
 
     @OneToMany(() => OrdersEntity, order => order.user)
     orders: OrdersEntity[];
+
+    @OneToMany(() => CommentEntity, comment => comment.user)
+    comments: CommentEntity[];
 
     @CreateDateColumn({ type: "timestamp", name: 'created_at' })
     createdAt: Date;

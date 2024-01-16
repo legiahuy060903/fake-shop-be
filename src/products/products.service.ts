@@ -52,16 +52,24 @@ export class ProductsService {
   findOne(id: number) {
     return `This action returns a #${id} product`;
   }
-  findOneBySlug(slug: string) {
-    return from(this.productRepository.findOne({ where: { slug }, relations: ["images", "category"] })).pipe(
-      map(item => ({
-        data: {
-          slides: [item.thumbnail, ...item.images.map(i => i.url)],
-          ...item,
-        }
-      })),
-    );
+  async findOneBySlug(slug: string) {
+    await this.productRepository.increment({ slug }, "view", 1);
+    const item = await this.productRepository.findOne({
+      where: { slug },
+      relations: ["images", "category", "comments"]
+    });
+    if (!item) {
+      return null;
+    }
+
+    const slides = [item.thumbnail];
+    if (item.images && item.images.length > 0) {
+      slides.push(...item.images.map(i => i.url));
+    }
+
+    return { data: { ...item, slides } };
   }
+
 
   update(id: number, updateProductDto: UpdateProductDto) {
     return;

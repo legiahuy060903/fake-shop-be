@@ -14,6 +14,8 @@ import { ProductsModule } from './products/products.module';
 import { ProductsEntity } from './products/entities/product.entity';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ImagesEntity } from './products/entities/image.entity';
+import { CommentsModule } from './comments/comments.module';
+import { CommentEntity } from './comments/entities/comment.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,7 +31,7 @@ import { ImagesEntity } from './products/entities/image.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [UsersEntity, OrdersEntity, CategoryEntity, ProductsEntity, ImagesEntity],
+        entities: [UsersEntity, OrdersEntity, CategoryEntity, ProductsEntity, ImagesEntity, CommentEntity],
         synchronize: true,
       })
     }),
@@ -38,7 +40,8 @@ import { ImagesEntity } from './products/entities/image.entity';
     AuthModule,
     CategoriesModule,
     ProductsModule,
-    CloudinaryModule
+    CloudinaryModule,
+    CommentsModule
   ],
   controllers: [AppController],
   providers: [AppService],

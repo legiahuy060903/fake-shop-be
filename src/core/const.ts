@@ -80,7 +80,7 @@ export const handleWeek = (i: number) => {
 
 
 export function getCurrentWeek() {
-    console.log(moment().week())
+    // console.log(moment().week())
     // var currentDate = moment();
 
     // var weekStart = currentDate.clone().startOf('isoWeek');

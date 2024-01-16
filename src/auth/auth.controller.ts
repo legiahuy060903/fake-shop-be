@@ -17,8 +17,8 @@ export class AuthController {
     @Public()
     @Post("register")
     async create(@Body() createUserDto: CreateUserDto) {
-        const checkMail = await this.usersService.findOne({ email: createUserDto.email });
-        if (checkMail) throw new BadRequestException("Email đã được sử dụng");
+        const checkMail = await this.usersService.findOne({ email: createUserDto.email, username: createUserDto.username });
+        if (checkMail) throw new BadRequestException("Tài khoản đã được sử dụng");
         else return { data: await this.usersService.create(createUserDto) }
 
     }
