@@ -9,11 +9,13 @@ import cookieParser from 'cookie-parser';
 import moment from 'moment-timezone';
 moment.tz.setDefault("Asia/Ho_Chi_Minh");
 async function bootstrap() {
+
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
   app.enableCors({
-    "origin": "*",
-    "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
-    "preflightContinue": false
+    origin: configService.get<string>("PORT_CLIENT"),
+    credentials: true,
+    preflightContinue: false
   });
   app.use(cookieParser());
   app.setGlobalPrefix('api');
@@ -22,7 +24,6 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   const reflector: Reflector = new Reflector();
   app.useGlobalGuards(new JwtAuthGuard(reflector))
-  const configService = app.get(ConfigService);
   const port: string = configService.get<string>('PORT');
   await app.listen(port);
 }

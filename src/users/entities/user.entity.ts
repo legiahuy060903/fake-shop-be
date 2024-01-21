@@ -43,6 +43,9 @@ export class UsersEntity extends BaseEntity {
     @OneToMany(() => CommentEntity, comment => comment.user)
     comments: CommentEntity[];
 
+    @OneToMany(() => CommentEntity, like => like.user)
+    likes: CommentEntity[];
+
     @CreateDateColumn({ type: "timestamp", name: 'created_at' })
     createdAt: Date;
 

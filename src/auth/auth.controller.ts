@@ -48,6 +48,7 @@ export class AuthController {
     @Public()
     @Get('refresh')
     async handRefreshToken(@Req() request: Request, @Res({ passthrough: true }) response: Response) {
+        console.log("refresh")
         const cookie = request.cookies['refreshtoken'];
         return { data: await this.authService.checkRefreshToken(cookie, response) }
     }

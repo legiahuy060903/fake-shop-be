@@ -2,10 +2,10 @@ import { IsNotEmpty } from "class-validator";
 
 import { ProductsEntity } from "src/products/entities/product.entity";
 import { UsersEntity } from "src/users/entities/user.entity";
+import { LikeEntity } from "../entities/like.entity";
+import { CommentEntity } from "../entities/comment.entity";
 
 export class CreateCommentDto {
-
-
     id: number;
 
     @IsNotEmpty({ message: "Nội dung không được để trống" })
@@ -16,7 +16,7 @@ export class CreateCommentDto {
 
     block: boolean;
 
-    like: number;
+    like: LikeEntity[];
 
     @IsNotEmpty({ message: "User không được để trống" })
     user: UsersEntity;
@@ -27,4 +27,10 @@ export class CreateCommentDto {
 
     createdAt: Date;
     updatedAt: Date;
+}
+
+export class CreateLikeDto {
+    like: "like" | "dislike";
+    comment: CommentEntity;
+    user: UsersEntity;
 }

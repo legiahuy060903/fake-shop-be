@@ -15,7 +15,7 @@ export class CreateProductDto {
     //@IsNotEmpty({ message: "Ảnh chính không được để trống" })
     thumbnail: string;
     slug: string;
-
+    per_discount: string;
     public: boolean;
 
     @IsNotEmpty({ message: "Ngày ra mắt không được để trống" })

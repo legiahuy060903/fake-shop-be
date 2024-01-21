@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CommentsService } from './comments.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
+import { CreateCommentDto, CreateLikeDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { map } from 'rxjs';
 import { ApiQueryRestParams } from 'src/core/const';
+import { Public, User } from 'src/decorator/pub';
+import { IUserToken } from 'src/types/ba.interface';
 
 @Controller('comments')
 export class CommentsController {
@@ -16,6 +17,12 @@ export class CommentsController {
     return this.commentsService.create(createCommentDto);
   }
 
+  @Post('like')
+  createLike(@Body() body: CreateLikeDto) {
+    return this.commentsService.createLike(body)
+  }
+
+  @Public()
   @Get()
   findAll(@Query() query: ApiQueryRestParams) {
     return this.commentsService.findAll(query);

@@ -16,6 +16,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ImagesEntity } from './products/entities/image.entity';
 import { CommentsModule } from './comments/comments.module';
 import { CommentEntity } from './comments/entities/comment.entity';
+import { LikeEntity } from './comments/entities/like.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,7 +32,7 @@ import { CommentEntity } from './comments/entities/comment.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [UsersEntity, OrdersEntity, CategoryEntity, ProductsEntity, ImagesEntity, CommentEntity],
+        entities: [UsersEntity, OrdersEntity, CategoryEntity, ProductsEntity, ImagesEntity, CommentEntity, LikeEntity],
         synchronize: true,
       })
     }),

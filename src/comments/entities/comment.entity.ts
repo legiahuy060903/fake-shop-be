@@ -3,6 +3,7 @@
 import { ProductsEntity } from 'src/products/entities/product.entity';
 import { UsersEntity } from 'src/users/entities/user.entity';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany, BaseEntity, ManyToOne } from 'typeorm';
+import { LikeEntity } from './like.entity';
 
 @Entity({ name: 'comment' })
 export class CommentEntity extends BaseEntity {
@@ -18,11 +19,8 @@ export class CommentEntity extends BaseEntity {
     @Column({ type: "boolean", default: false })
     block: boolean;
 
-    @Column({ default: 0 })
-    like: number;
-
-    // @ManyToOne(() => CommentEntity, comment => comment.children, { onDelete: "CASCADE", onUpdate: "CASCADE" })
-    // parentId: CommentEntity;
+    @OneToMany(() => LikeEntity, like => like.comment, { onDelete: "CASCADE", onUpdate: "CASCADE" })
+    likes: LikeEntity[];
 
     @ManyToOne(() => UsersEntity, user => user.comments, { onDelete: "CASCADE", onUpdate: "CASCADE" })
     user: UsersEntity;
@@ -38,7 +36,5 @@ export class CommentEntity extends BaseEntity {
 
     @UpdateDateColumn({ type: "timestamp", name: 'updated_at' })
     updatedAt: Date;
-
-
 }
 

@@ -27,7 +27,10 @@ export class ProductsEntity extends BaseEntity {
     public: boolean;
 
     @Column()
-    publish_date: string
+    publish_date: string;
+
+    @Column({ default: null })
+    per_discount: string;
 
     @Column()
     author: string;
